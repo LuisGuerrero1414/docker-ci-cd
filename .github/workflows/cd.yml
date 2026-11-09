@@ -7,7 +7,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: luisguerrero1414/docker-ci-cd
 
 jobs:
   build-and-push:
