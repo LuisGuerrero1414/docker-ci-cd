@@ -58,39 +58,14 @@ jobs:
           cache-to: type=gha,mode=max
 
   deploy:
-    name: Deploy to Server via SSH
+    name: Deploy to Server via SSH (Simulated)
     needs: build-and-push
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Copy Deploy Script and Docker Compose to Remote
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          source: "deploy.sh,docker-compose.yml,nginx/default.conf"
-          target: "~/app"
-
-      - name: Execute Deployment Script via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        env:
-          NEW_TAG: ${{ github.sha }}
-          IMAGE_REPO: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          GHCR_USER: ${{ github.actor }}
-          GHCR_PAT: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT || 22 }}
-          envs: NEW_TAG,IMAGE_REPO,GHCR_USER,GHCR_PAT
-          script: |
-            cd ~/app
-            chmod +x deploy.sh
-            echo "$GHCR_PAT" | docker login ghcr.io -u "$GHCR_USER" --password-stdin
-            ./deploy.sh "$IMAGE_REPO:$NEW_TAG"
+      - name: Simulated Deployment Step
+        run: |
+          echo "Simulando el despliegue en servidor..."
+          echo "La imagen fue construida y publicada con éxito en GHCR:"
+          echo "${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}"
+          echo "Despliegue finalizado sin errores."
